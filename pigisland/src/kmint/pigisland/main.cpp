@@ -42,6 +42,8 @@ int main() {
     s.build_actor<pigisland::pig>(loc);
   }
 
+  auto& pig = s.build_actor < pigisland::pig>(kmint::math::vector2d(112, 753));
+
   // Maak een event_source aan (hieruit kun je alle events halen, zoals
   // toetsaanslagen)
   ui::events::event_source event_source{};

@@ -46,5 +46,14 @@ void shark::changeState(State<shark>* pNewState)
     }
 }
 
+void shark::set_tint(int r, int g, int b) {
+    graphics::color tint = graphics::color(r, g, b);
+    this->drawable_.set_tint(tint);
+}
+
+void shark::remove_tint() {
+    this->drawable_.remove_tint();
+}
+
 } // namespace pigisland
 } // namespace kmint

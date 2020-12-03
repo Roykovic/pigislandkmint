@@ -19,7 +19,7 @@ public:
   bool incorporeal() const override { return false; }
   // geeft de lengte van een zijde van de collision box van deze actor terug.
   // Belangrijk voor collision detection
-  scalar collision_range() const override { return 16.0; }
+  scalar collision_range() const override { return 32.0; }
   // geeft aan dat de haai andere actors kan zien
   bool perceptive() const override { return true; }
   // geeft het bereik aan waarbinnen een haai
@@ -27,6 +27,7 @@ public:
   scalar perception_range() const override { return 200.f; }
 
   void changeState(State<shark>* pNewState);
+  State<shark>* get_state() { return currentstate_; }
 
   void set_pigloc(kmint::math::vector2d loc) { stinkypigloc_ = loc; }
   kmint::math::vector2d get_pigloc() { return stinkypigloc_; }
@@ -34,7 +35,16 @@ public:
   void set_path(std::vector<size_t> path) { path_ = path; }
   std::vector<size_t> get_path() { return path_; }
 
+  void set_steps(int steps) { steps_ = steps; }
+  int get_steps() { return steps_; }
+
+  void set_fleeing(bool fleeing) { fleeing_ = fleeing; }
+  int is_fleeing() { return fleeing_; }
+
   kmint::map::map_graph* graph;
+
+  void set_tint(int r, int g, int b);
+  void remove_tint();
 
 private:
   // hoeveel tijd is verstreken sinds de laatste beweging
@@ -51,6 +61,10 @@ private:
   kmint::math::vector2d stinkypigloc_;
 
   std::vector<size_t> path_;
+
+  int steps_ = 0;
+
+  bool fleeing_ = false;
 
 };
 

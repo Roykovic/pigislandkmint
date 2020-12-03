@@ -4,6 +4,7 @@
 #include "kmint/map/map.hpp"
 #include "kmint/play.hpp"
 #include "kmint/primitives.hpp"
+#include "kmint/pigisland/states/state.hpp"
 
 namespace kmint {
 namespace pigisland {
@@ -18,12 +19,18 @@ public:
 	bool incorporeal() const override { return false; }
 	// geeft de lengte van een zijde van de collision box van deze actor terug.
 	// Belangrijk voor collision detection
-	scalar collision_range() const override { return 16.0; }
+	scalar collision_range() const override { return 32.0; }
 private:
 	// hoeveel tijd is verstreken sinds de laatste beweging
 	delta_time t_passed_{};
 	// weet hoe de koe getekend moet worden
 	play::image_drawable drawable_;
+
+	State<boat>* currentstate_ = nullptr;
+
+	State<boat>* previousstate_;
+
+	State<boat>* globalstate_;
 };
 
 } // namespace pigisland

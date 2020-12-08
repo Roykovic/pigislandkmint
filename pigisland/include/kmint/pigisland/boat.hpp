@@ -55,7 +55,7 @@ private:
 
 	std::vector<size_t> path_;
 
-	int damage_ = 90;	//TODO: = 0;
+	int damage_ = 0;
 };
 
 } // namespace pigisland

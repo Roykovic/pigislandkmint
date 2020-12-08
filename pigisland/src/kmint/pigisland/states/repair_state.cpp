@@ -90,7 +90,7 @@ namespace kmint {
 
             boat->repair_history_[dock].push_back(repair);
 
-            boat->set_damage(boat->get_damage() - repair); //TODO randomized damage repair
+            boat->set_damage(boat->get_damage() - repair);
         }
     }
 }

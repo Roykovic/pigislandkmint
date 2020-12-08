@@ -14,6 +14,7 @@
 #include <random>
 #include <vector>
 #include <kmint\pigisland\states\wandering_state.hpp>
+#include <kmint\random.hpp>
 
 using namespace kmint;
 
@@ -54,13 +55,13 @@ int main() {
     // sinds de vorige keer dat deze lambda werd aangeroepen
     // loop controls is een object met eigenschappen die je kunt gebruiken om de
     // main-loop aan te sturen.
-
     for (ui::events::event &e : event_source) {
       // event heeft een methode handle_quit die controleert
       // of de gebruiker de applicatie wilt sluiten, en zo ja
       // de meegegeven functie (of lambda) aanroept om met het
       // bijbehorende quit_event
       //
+
       e.handle_quit([&ctl](ui::events::quit_event qe) { ctl.quit = true; });
       e.handle_key_up([&](auto ke) {
         switch (ke.key) {

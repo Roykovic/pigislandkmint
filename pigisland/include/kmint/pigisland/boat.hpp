@@ -20,6 +20,27 @@ public:
 	// geeft de lengte van een zijde van de collision box van deze actor terug.
 	// Belangrijk voor collision detection
 	scalar collision_range() const override { return 32.0; }
+
+	void changeState(State<boat>* pNewState);
+	State<boat>* get_state() { return currentstate_; }
+
+	void set_path(std::vector<size_t> path) { path_ = path; }
+	std::vector<size_t> get_path() { return path_; }
+
+	void set_damage(int damage) { damage_ = damage; }
+	int get_damage() { return damage_; }
+
+	kmint::map::map_graph* graph;
+
+	void set_tint(int r, int g, int b);
+	void remove_tint();
+
+	std::unordered_map<int, std::vector<int>> repair_history_ =
+	{
+		{1,{50}},
+		{2,{50}},
+		{3,{50}}
+	};
 private:
 	// hoeveel tijd is verstreken sinds de laatste beweging
 	delta_time t_passed_{};
@@ -31,6 +52,10 @@ private:
 	State<boat>* previousstate_;
 
 	State<boat>* globalstate_;
+
+	std::vector<size_t> path_;
+
+	int damage_ = 90;	//TODO: = 0;
 };
 
 } // namespace pigisland

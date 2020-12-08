@@ -25,6 +25,7 @@ add_executable(pigisland
   src/kmint/pigisland/states/wandering_state.cpp
   src/kmint/pigisland/states/wandering_boat_state.cpp
   src/kmint/pigisland/states/piggybanking_state.cpp
+  src/kmint/pigisland/states/repair_state.cpp
   src/kmint/pigisland/states/smell_state.cpp
   src/kmint/pigisland/pig.cpp)
 

@@ -15,7 +15,7 @@ shark::shark(map::map_graph &g, map::map_node &initial_node)
 
 void shark::act(delta_time dt) {
   t_passed_ += dt;
-  if (to_seconds(t_passed_) >= 0.5) {
+  if (to_seconds(t_passed_) >= (this->node().node_info().kind == 'R' ? 4 : 1)) {
 
       globalstate_->execute(this);
       currentstate_->execute(this);

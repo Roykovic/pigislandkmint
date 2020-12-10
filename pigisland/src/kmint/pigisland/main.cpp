@@ -15,6 +15,7 @@
 #include <vector>
 #include <kmint\pigisland\states\wandering_state.hpp>
 #include <kmint\random.hpp>
+#include <kmint\pigisland\kill_message.hpp>
 
 using namespace kmint;
 
@@ -28,22 +29,37 @@ int main() {
   // maak een podium aan
   play::stage s{{1024, 768}};
 
+  bool kill = false;
+
+ kmint::pigisland::kill_message* message = new kmint::pigisland::kill_message();
+
   auto map = pigisland::map();
   auto &graph = map.graph();
   s.build_actor<play::background>(math::size(1024, 768),
                                   graphics::image{map.background_image()});
   s.build_actor<play::map_actor>(math::vector2d{0.f, 0.f}, map.graph());
-  s.build_actor<pigisland::boat>(graph,
+ auto& boat = s.build_actor<pigisland::boat>(graph,
                                  pigisland::find_node_of_kind(graph, '1'));
-  s.build_actor<pigisland::shark>(graph,
-                                  pigisland::find_node_of_kind(graph, 'K'));
+
+
 
   auto locs = pigisland::random_pig_locations(100);
+
+
+  auto& shark = s.build_actor<pigisland::shark>(graph,
+      pigisland::find_node_of_kind(graph, 'K'), message);
+
+  std::vector<pigisland::pig*> pigs;
   for (auto loc : locs) {
-    s.build_actor<pigisland::pig>(loc);
+    auto& pig = s.build_actor<pigisland::pig>(loc, boat, shark);
+    pigs.push_back(&pig);
   }
 
-  auto& pig = s.build_actor < pigisland::pig>(kmint::math::vector2d(112, 753));
+  message->addCallback([&]()
+  {
+      kill = true;
+  });
+
 
   // Maak een event_source aan (hieruit kun je alle events halen, zoals
   // toetsaanslagen)
@@ -55,6 +71,21 @@ int main() {
     // sinds de vorige keer dat deze lambda werd aangeroepen
     // loop controls is een object met eigenschappen die je kunt gebruiken om de
     // main-loop aan te sturen.
+      if (kill) {
+          kill = false;
+          for (auto& pig : pigs) {
+              pig->remove();
+          }
+
+          locs = pigisland::random_pig_locations(100);
+
+          pigs.clear();
+          for (auto loc : locs) {
+              auto& pig = s.build_actor<pigisland::pig>(loc, boat, shark);
+              pigs.push_back(&pig);
+          }
+      }
+
     for (ui::events::event &e : event_source) {
       // event heeft een methode handle_quit die controleert
       // of de gebruiker de applicatie wilt sluiten, en zo ja

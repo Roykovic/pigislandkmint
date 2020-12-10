@@ -1,16 +1,63 @@
 #include "kmint/pigisland/pig.hpp"
 #include "kmint/pigisland/resources.hpp"
-#include "kmint/random.hpp"
 
 namespace kmint {
 namespace pigisland {
 
 
-pig::pig(math::vector2d location)
+pig::pig(math::vector2d location, boat& boat, shark& shark)
   : play::free_roaming_actor{location},
-    drawable_{*this, pig_image()} {
+    drawable_{ *this, pig_image() }, boat_(boat), shark_(shark) {
 }
 
+void pig::act(delta_time dt) {
+
+        math::vector2d steeringForce = steering->wander(this);
+
+        steeringForce += (steering->seek(boat_.location(), this->location(), maxSpeed_, velocity_) * boatAttraction);
+        steeringForce += (steering->flee(shark_.location(), this->location(), maxSpeed_, velocity_) * sharkAttraction);
+
+        math::vector2d acceleration = steeringForce / mass_;
+
+        velocity_ += acceleration * to_seconds(dt);
+
+        double vector_length = std::sqrt(std::pow(velocity_.x(), 2) + std::pow(velocity_.y(), 2));
+        if (vector_length > maxSpeed_) {
+            velocity_ = normalize(velocity_);
+
+            velocity_ *= maxSpeed_;
+        }
+
+        //update the position
+        move(velocity_ *to_seconds(dt));
+
+
+        heading_ = normalize(velocity_);
+}
+
+void pig::move(math::vector2d delta) {
+    math::vector2d newLoc;
+
+    if (location().x() + delta.x() > 1024) {
+        newLoc.x(0);
+    }
+    else if (location().x() + delta.x() < 0){
+        newLoc.x(1024);
+    }
+    else {
+        newLoc.x(location().x() + delta.x());
+    }
+    if (location().y() + delta.y() > 768) {
+        newLoc.y(0);
+    }
+    else if (location().y() + delta.y() < 0) {
+        newLoc.y(768);
+    }
+    else {
+        newLoc.y(location().y() + delta.y());
+    }
+    location(newLoc);
+}
 
 } // namespace pigisland
 

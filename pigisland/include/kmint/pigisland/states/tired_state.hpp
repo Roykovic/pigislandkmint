@@ -1,5 +1,6 @@
 #include "kmint/pigisland/states/state.hpp"
 #include <kmint\pigisland\shark.hpp>
+#include <kmint\pigisland\kill_message.hpp>
 
 namespace kmint {
 	namespace pigisland {

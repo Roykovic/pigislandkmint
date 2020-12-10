@@ -13,9 +13,9 @@ namespace pigisland {
 
   void boat::act(delta_time dt) {
     t_passed_ += dt;
+    globalstate_->execute(this);
     if (to_seconds(t_passed_) >= (this->node().node_info().kind == 'R' ? 4 : 1)) {
 
-        globalstate_->execute(this);
         currentstate_->execute(this);
 
       t_passed_ = from_seconds(0);

@@ -39,6 +39,7 @@ namespace kmint {
             g.untag_all();
             shark->remove_tint();
             shark->set_steps(0);
+            shark->message_->send();
         }
     }
 }

@@ -5,13 +5,14 @@
 #include "kmint/play.hpp"
 #include "kmint/primitives.hpp"
 #include "kmint/pigisland/states/state.hpp"
+#include <kmint\pigisland\kill_message.hpp>
 
 namespace kmint {
 namespace pigisland {
 
 class shark : public play::map_bound_actor {
 public:
-  shark(map::map_graph &g, map::map_node &initial_node);
+  shark(map::map_graph &g, map::map_node &initial_node, kill_message* message);
   // wordt elke game tick aangeroepen
   void act(delta_time dt) override;
   ui::drawable const &drawable() const override { return drawable_; }
@@ -37,6 +38,10 @@ public:
 
   void set_steps(int steps) { steps_ = steps; }
   int get_steps() { return steps_; }
+
+  delta_time get_t_passed() { return t_passed_; }
+
+  kill_message* message_;
 
   void set_fleeing(bool fleeing) { fleeing_ = fleeing; }
   int is_fleeing() { return fleeing_; }

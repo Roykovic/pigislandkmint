@@ -11,15 +11,10 @@ namespace kmint {
             std::cout << "entering smelling" << std::endl;
         }
         void smell_state::execute(shark* shark) {
-            shark->set_steps(shark->get_steps() + 1);
 
             if (shark->get_steps() > 99) {
                 tired_state* newState = new tired_state();
                 shark->changeState(newState);
-                return;
-            }
-
-            if(shark->is_fleeing()){
                 return;
             }
 
@@ -29,11 +24,19 @@ namespace kmint {
                 if (!strstr(typeid(c).name(), "boat")) {
                     std::cout << "Collided with pig at " << c.location().x() << ", "
                         << c.location().y() << "\n";
-                    
+
                     c.remove();
                     wandering_state* newState = new wandering_state();
                     shark->changeState(newState);
                 }
+            }
+
+            if (to_seconds(shark->get_t_passed()) < 1) { return; }
+
+            shark->set_steps(shark->get_steps() + 1);
+
+            if(shark->is_fleeing()){
+                return;
             }
 
             for (auto i = shark->begin_perceived(); i != shark->end_perceived(); ++i) {

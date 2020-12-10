@@ -8,16 +8,17 @@
 #include <kmint\pigisland\states\smell_state.hpp>
 namespace kmint {
 namespace pigisland {
-shark::shark(map::map_graph &g, map::map_node &initial_node)
+shark::shark(map::map_graph &g, map::map_node &initial_node, kill_message* pMessage)
     : play::map_bound_actor{initial_node}, drawable_{*this,
                                                      graphics::image{
-                                                         shark_image()}}, globalstate_(new smell_state()), currentstate_(new wandering_state), graph(&g) {}
+                                                         shark_image()}}, globalstate_(new smell_state()), currentstate_(new wandering_state), graph(&g), message_(pMessage) {}
 
 void shark::act(delta_time dt) {
   t_passed_ += dt;
+
+  globalstate_->execute(this);
   if (to_seconds(t_passed_) >= (this->node().node_info().kind == 'R' ? 4 : 1)) {
 
-      globalstate_->execute(this);
       currentstate_->execute(this);
 
       t_passed_ = from_seconds(0);

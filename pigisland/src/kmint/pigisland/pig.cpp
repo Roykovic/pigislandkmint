@@ -21,6 +21,8 @@ void pig::act(delta_time dt) {
         steeringForce += (steering->cohesion(this, maxSpeed_, velocity_, tagNeighbours()) * cohesion);
         steeringForce += (steering->alignment(this, tagNeighbours(false)) * alignment);
 
+        steeringForce += (steering->wall_avoidance(this, walls_)*10);
+
 
         math::vector2d acceleration = steeringForce / mass_;
 
@@ -44,19 +46,21 @@ void pig::move(math::vector2d delta) {
     math::vector2d newLoc;
 
     if (location().x() + delta.x() > 1024) {
-        newLoc.x(0);
+        newLoc.x(location().x() - delta.x());
     }
     else if (location().x() + delta.x() < 0){
-        newLoc.x(1024);
+        newLoc.x(location().x() - delta.x());
     }
     else {
         newLoc.x(location().x() + delta.x());
     }
     if (location().y() + delta.y() > 768) {
-        newLoc.y(0);
+        newLoc.y(location().y() - delta.y());
+
     }
     else if (location().y() + delta.y() < 0) {
-        newLoc.y(768);
+        newLoc.y(location().y() - delta.y());
+
     }
     else {
         newLoc.y(location().y() + delta.y());

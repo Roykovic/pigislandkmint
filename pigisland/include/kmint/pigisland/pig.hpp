@@ -27,6 +27,7 @@ public:
 
 
   void set_pigs(std::vector<pig*> pigs) { pigs_ = pigs; }
+  void set_walls(std::vector<wall*> walls) { walls_ = walls; }
 
   bool incorporeal() const override { return false; }
 
@@ -49,6 +50,7 @@ private:
 
   std::vector<kmint::math::vector2d> tagNeighbours(bool location = true);
   std::vector<pig*> pigs_;
+  std::vector<wall*> walls_;
 
 
   // hoeveel tijd is verstreken sinds de laatste beweging

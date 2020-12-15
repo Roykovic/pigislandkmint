@@ -55,6 +55,11 @@ int main() {
     pigs.push_back(&pig);
   }
 
+  for (auto pig : pigs) {
+      pig->set_pigs(pigs);
+  }
+
+
   message->addCallback([&]()
   {
       kill = true;

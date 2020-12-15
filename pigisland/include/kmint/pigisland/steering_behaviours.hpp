@@ -18,6 +18,9 @@ namespace kmint {
 			kmint::math::vector2d flee(kmint::math::vector2d targetPos, kmint::math::vector2d curPos, double maxSpeed, kmint::math::vector2d velocity);
 			kmint::math::vector2d pursuit(kmint::play::free_roaming_actor* curActor, kmint::play::free_roaming_actor* target);
 			kmint::math::vector2d wander(kmint::play::free_roaming_actor* curActor);
+			kmint::math::vector2d cohesion(kmint::play::free_roaming_actor* curActor, double maxSpeed, kmint::math::vector2d velocity, std::vector<kmint::math::vector2d> taggedNeighbourLocs);
+			kmint::math::vector2d alignment(kmint::play::free_roaming_actor* curActor, const std::vector<kmint::math::vector2d> taggedNeighbourHeadings);
+			kmint::math::vector2d seperation(kmint::play::free_roaming_actor* curActor, const std::vector<kmint::math::vector2d> taggedNeighbourLocs);
 			kmint::math::vector2d pointToWorldSpace(kmint::math::vector2d& point, kmint::math::vector2d& AgentHeading, kmint::math::vector2d& AgentSide, kmint::math::vector2d& AgentPosition);
 
 		private:

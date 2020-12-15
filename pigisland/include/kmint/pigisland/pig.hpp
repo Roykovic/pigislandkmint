@@ -25,6 +25,9 @@ public:
   kmint::math::vector2d get_velocity() { return velocity_; }
   math::vector2d heading() const override { return heading_; }
 
+
+  void set_pigs(std::vector<pig*> pigs) { pigs_ = pigs; }
+
   bool incorporeal() const override { return false; }
 
   scalar collision_range() const override { return 16.0; }
@@ -40,9 +43,12 @@ private:
   scalar alignment = random_scalar(0, 1);
 
   double mass_ = 1;
-  double maxSpeed_ = 100;
+  double maxSpeed_ = 50;
   kmint::math::vector2d heading_ = kmint::math::vector2d{ 1,0 };
   kmint::math::vector2d velocity_ = kmint::math::vector2d{ 0,0 };
+
+  std::vector<kmint::math::vector2d> tagNeighbours(bool location = true);
+  std::vector<pig*> pigs_;
 
 
   // hoeveel tijd is verstreken sinds de laatste beweging

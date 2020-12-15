@@ -17,6 +17,11 @@ void pig::act(delta_time dt) {
         steeringForce += (steering->seek(boat_.location(), this->location(), maxSpeed_, velocity_) * boatAttraction);
         steeringForce += (steering->flee(shark_.location(), this->location(), maxSpeed_, velocity_) * sharkAttraction);
 
+        steeringForce += (steering->seperation(this, tagNeighbours()) * seperation);
+        steeringForce += (steering->cohesion(this, maxSpeed_, velocity_, tagNeighbours()) * cohesion);
+        steeringForce += (steering->alignment(this, tagNeighbours(false)) * alignment);
+
+
         math::vector2d acceleration = steeringForce / mass_;
 
         velocity_ += acceleration * to_seconds(dt);
@@ -57,6 +62,33 @@ void pig::move(math::vector2d delta) {
         newLoc.y(location().y() + delta.y());
     }
     location(newLoc);
+}
+
+std::vector<kmint::math::vector2d> pig::tagNeighbours(bool location) {
+
+    std::vector<kmint::math::vector2d> taggedNeighbours;
+
+	for (pig* pig : pigs_)
+	{
+        if (!pig->removed()) {
+            kmint::math::vector2d to = (this->location() - pig->location());
+
+            double toLengthSq = pow(to.x(), 2) + pow(to.y(), 2);
+
+            double range = 60;
+
+            if (this != pig && toLengthSq < pow(range, 2)) {
+                if (location) {
+                    taggedNeighbours.push_back(pig->location());
+                }
+                else {
+                    taggedNeighbours.push_back(pig->heading());
+                }
+            }
+        }
+	}
+
+    return taggedNeighbours;
 }
 
 } // namespace pigisland

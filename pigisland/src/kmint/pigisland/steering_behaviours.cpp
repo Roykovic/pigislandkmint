@@ -49,6 +49,58 @@ namespace kmint {
 			return targetWorld - curActor->location();
 		}
 
+		math::vector2d steering_behaviours::seperation(kmint::play::free_roaming_actor* curActor, const std::vector<kmint::math::vector2d> taggedNeighbourLocs) {
+
+			kmint::math::vector2d steeringForce;
+
+			for (int i = 0; i < taggedNeighbourLocs.size(); ++i)
+			{
+					Vector2D ToAgent = curActor->location() - taggedNeighbourLocs[i];
+					//scale the force inversely proportional to the agent's distance
+					//from its neighbor.
+
+					double toAgentLength = std::sqrt(pow(ToAgent.x(), 2) + pow(ToAgent.y(), 2));
+					steeringForce += normalize(ToAgent) / toAgentLength;
+			}
+			return steeringForce;
+		}
+
+		math::vector2d steering_behaviours::alignment(kmint::play::free_roaming_actor* curActor, const std::vector<kmint::math::vector2d> taggedNeighbourHeadings) {
+
+			kmint::math::vector2d averageHeading;
+			int neighbourCount = taggedNeighbourHeadings.size();
+
+			for (int i = 0; i < taggedNeighbourHeadings.size(); ++i)
+			{
+				averageHeading += taggedNeighbourHeadings[i];
+			}
+
+			if (neighbourCount > 0)
+			{
+				averageHeading /= (double)neighbourCount;
+				averageHeading -= curActor->heading();
+			}
+			return averageHeading;
+		}
+
+		math::vector2d steering_behaviours::cohesion(kmint::play::free_roaming_actor* curActor, double maxSpeed, kmint::math::vector2d curVel, std::vector<kmint::math::vector2d> taggedNeighbourLocs) {
+
+			kmint::math::vector2d centerOfMass, steeringForce;
+			int neighbourCount = taggedNeighbourLocs.size();
+
+			for (int i = 0; i < taggedNeighbourLocs.size(); ++i)
+			{
+				centerOfMass += taggedNeighbourLocs[i];
+			}
+
+			if (neighbourCount > 0) {
+				centerOfMass /= neighbourCount;
+				steeringForce = seek(centerOfMass, curActor->location(), maxSpeed, curVel);
+			}
+
+			return steeringForce;
+		}
+
 		kmint::math::vector2d steering_behaviours::pointToWorldSpace(kmint::math::vector2d& target, kmint::math::vector2d& heading, kmint::math::vector2d& side, kmint::math::vector2d& loc)
 		{
 			//make a copy of the point

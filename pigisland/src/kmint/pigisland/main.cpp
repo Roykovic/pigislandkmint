@@ -16,6 +16,7 @@
 #include <kmint\pigisland\states\wandering_state.hpp>
 #include <kmint\random.hpp>
 #include <kmint\pigisland\kill_message.hpp>
+#include <kmint\pigisland\astar.hpp>
 
 using namespace kmint;
 
@@ -33,13 +34,15 @@ int main() {
 
  kmint::pigisland::kill_message* message = new kmint::pigisland::kill_message();
 
+ kmint::pigisland::astar* astar = new kmint::pigisland::astar();
+
   auto map = pigisland::map();
   auto &graph = map.graph();
   s.build_actor<play::background>(math::size(1024, 768),
                                   graphics::image{map.background_image()});
   s.build_actor<play::map_actor>(math::vector2d{0.f, 0.f}, map.graph());
  auto& boat = s.build_actor<pigisland::boat>(graph,
-                                 pigisland::find_node_of_kind(graph, '1'));
+                                 pigisland::find_node_of_kind(graph, '1'), astar);
 
 
 
@@ -47,7 +50,7 @@ int main() {
 
 
   auto& shark = s.build_actor<pigisland::shark>(graph,
-      pigisland::find_node_of_kind(graph, 'K'), message);
+      pigisland::find_node_of_kind(graph, 'K'), message, astar);
 
   std::vector<pigisland::pig*> pigs;
   for (auto loc : locs) {

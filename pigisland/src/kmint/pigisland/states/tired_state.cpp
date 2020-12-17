@@ -13,8 +13,7 @@ namespace kmint {
             auto& g = *shark->graph;
             auto& sharkNode = find_node_of_kind(g, 'K');
 
-            astar astar;
-            auto path = astar.findPath(shark->node().node_id(), sharkNode.node_id(), *shark->graph, true);
+            auto path = shark->astar->findPath(shark->node().node_id(), sharkNode.node_id(), *shark->graph, true, "shark");
             shark->set_path(path);
 
         }
@@ -36,7 +35,17 @@ namespace kmint {
         void tired_state::exit(shark* shark) {
             std::cout << "leaving tired" << std::endl;
             auto& g = *shark->graph;
-            g.untag_all();
+            //g.untag_all();
+
+
+            for (auto const& [index, visited] : shark->astar->visitedNodesByActor["shark"]) {
+                if (visited) {
+                    g[index].tag(kmint::graph::node_tag::normal);
+                }
+            }
+
+            shark->astar->visitedNodesByActor["shark"].clear();
+
             shark->remove_tint();
             shark->set_steps(0);
             shark->message_->send();

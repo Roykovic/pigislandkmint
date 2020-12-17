@@ -19,8 +19,7 @@ namespace kmint {
                 return;
             }
 
-            astar astar;
-            auto path = astar.findPath(shark->node().node_id(), closestNode.node_id(), *shark->graph, true);
+            auto path = shark->astar->findPath(shark->node().node_id(), closestNode.node_id(), *shark->graph, true, "shark");
             shark->set_path(path);
         }
         void hunting_state::execute(shark* shark) {
@@ -35,7 +34,16 @@ namespace kmint {
         void hunting_state::exit(shark* shark) {
             std::cout << "leaving hunting" << std::endl;
             auto& g = *shark->graph;
-            g.untag_all();
+            //g.untag_all();
+
+            for (auto const& [index, visited] : shark->astar->visitedNodesByActor["shark"]) {
+                if (visited) {
+                    g[index].tag(kmint::graph::node_tag::normal);
+                }
+            }
+
+            shark->astar->visitedNodesByActor["shark"].clear();
+
             shark->remove_tint();
         }
 

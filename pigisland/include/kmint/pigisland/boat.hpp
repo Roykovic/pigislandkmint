@@ -5,13 +5,14 @@
 #include "kmint/play.hpp"
 #include "kmint/primitives.hpp"
 #include "kmint/pigisland/states/state.hpp"
+#include <kmint\pigisland\astar.hpp>
 
 namespace kmint {
 namespace pigisland {
 
 class boat : public play::map_bound_actor {
 public:
-	boat(map::map_graph& g, map::map_node& initial_node);
+	boat(map::map_graph& g, map::map_node& initial_node, astar* astar);
 	// wordt elke game tick aangeroepen
 	void act(delta_time dt) override;
 	ui::drawable const& drawable() const override { return drawable_; }
@@ -32,8 +33,12 @@ public:
 
 	kmint::map::map_graph* graph;
 
+	astar* astar;
+
 	void set_tint(int r, int g, int b);
 	void remove_tint();
+
+	delta_time get_t_passed() { return t_passed_; }
 
 	std::unordered_map<int, std::vector<int>> repair_history_ =
 	{

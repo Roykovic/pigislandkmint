@@ -11,7 +11,7 @@ namespace pigisland {
 	{
 	}
 
-	std::vector<size_t> astar::findPath(size_t start, size_t end, kmint::map::map_graph& graph, bool checkWeight) {
+	std::vector<size_t> astar::findPath(size_t start, size_t end, kmint::map::map_graph& graph, bool checkWeight, std::string actor) {
 		std::map<size_t, int> distanceMap;
 		std::map<size_t, size_t> pathMap;
 		std::map<size_t, bool> visited;
@@ -22,16 +22,17 @@ namespace pigisland {
 		}
 		distanceMap[start] = 0;
 
-		std::map<size_t, size_t> astarMap(astarRecusive(start, end, visited, distanceMap, pathMap, graph, checkWeight));
+		std::map<size_t, size_t> astarMap(astarRecusive(start, end, visited, distanceMap, pathMap, graph, checkWeight, actor));
 		return shortestPath(start, end, astarMap, graph);
 	}
 
-	std::map<size_t, size_t> astar::astarRecusive(size_t current, size_t end, std::map<size_t, bool> visited, std::map<size_t, int> distanceMap, std::map<size_t, size_t> pathMap, kmint::map::map_graph& graph, bool checkWeight)
+	std::map<size_t, size_t> astar::astarRecusive(size_t current, size_t end, std::map<size_t, bool> visited, std::map<size_t, int> distanceMap, std::map<size_t, size_t> pathMap, kmint::map::map_graph& graph, bool checkWeight, std::string actor)
 	{
 		visited[current] = true;
 		graph[current].tag(kmint::graph::node_tag::visited);
 
 		if (current == end) {
+			this->visitedNodesByActor[actor] = visited;
 			return pathMap;
 		}
 
@@ -56,7 +57,7 @@ namespace pigisland {
 		}
 
 		size_t next = findShortestDistanceNode(visited, distanceMap);
-		return astarRecusive(next, end, visited, distanceMap, pathMap, graph, checkWeight);
+		return astarRecusive(next, end, visited, distanceMap, pathMap, graph, checkWeight, actor);
 	}
 
 	size_t astar::findShortestDistanceNode(std::map<size_t, bool> visited, std::map<size_t, int> distanceMap) {

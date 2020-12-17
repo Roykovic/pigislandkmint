@@ -19,11 +19,10 @@ namespace kmint {
 
             const float random_number = random_scalar(0, 1);
             std::cout << random_number << std::endl;
-            astar astar;
 
-            auto grainPath = astar.findPath(boat->node().node_id(), grainNode.node_id(), *boat->graph, true);
-            auto grassPath = astar.findPath(boat->node().node_id(), grassNode.node_id(), *boat->graph, true);
-            auto treePath = astar.findPath(boat->node().node_id(), treeNode.node_id(), *boat->graph, true);
+            auto grainPath = boat->astar->findPath(boat->node().node_id(), grainNode.node_id(), *boat->graph, true, "boat");
+            auto grassPath = boat->astar->findPath(boat->node().node_id(), grassNode.node_id(), *boat->graph, true, "boat");
+            auto treePath = boat->astar->findPath(boat->node().node_id(), treeNode.node_id(), *boat->graph, true, "boat");
 
             auto grainChance = (std::accumulate(boat->repair_history_[1].begin(), boat->repair_history_[1].end(), 0.0) / boat->repair_history_[1].size()*15) / (grainPath.size());
             auto grassChance = (std::accumulate(boat->repair_history_[2].begin(), boat->repair_history_[2].end(), 0.0) / boat->repair_history_[2].size()*15) / (grassPath.size());
@@ -35,20 +34,28 @@ namespace kmint {
 
             std::vector<size_t> path;
 
+            for (auto const& [index, visited] : boat->astar->visitedNodesByActor["boat"]) {
+                if (visited) {
+                    g[index].tag(kmint::graph::node_tag::normal);
+                }
+            }
+
+            boat->astar->visitedNodesByActor["boat"].clear();
+
             if (random_number < grainEfficiency) {
                 std::cout << "Path A" << std::endl;
                 dock = 1;
-                path = grainPath;
+                path = boat->astar->findPath(boat->node().node_id(), grainNode.node_id(), *boat->graph, true, "boat");;
             }
             else if(random_number < grainEfficiency + grassEfficiency){
                 std::cout << "Path B" << std::endl;
                 dock = 2;
-                path = grassPath;
+                path = boat->astar->findPath(boat->node().node_id(), grassNode.node_id(), *boat->graph, true, "boat");
             }
             else {
                 std::cout << "Path C" << std::endl;
                 dock = 3;
-                path = treePath;
+                path = boat->astar->findPath(boat->node().node_id(), treeNode.node_id(), *boat->graph, true, "boat");
             }
 
             boat->set_path(path);
@@ -69,7 +76,16 @@ namespace kmint {
         void repair_state::exit(boat* boat) {
             std::cout << "boat leaving repair state" << std::endl;
             auto& g = *boat->graph;
-            g.untag_all();
+           //g.untag_all();
+
+            for (auto const& [index, visited] : boat->astar->visitedNodesByActor["boat"]) {
+                if (visited) {
+                    g[index].tag(kmint::graph::node_tag::normal);
+                }
+            }
+
+            boat->astar->visitedNodesByActor["boat"].clear();
+
             boat->remove_tint();
 
             int repair = 0;

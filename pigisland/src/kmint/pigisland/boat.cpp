@@ -6,9 +6,9 @@
 #include "kmint/pigisland/states/piggybanking_state.hpp"
 namespace kmint {
 namespace pigisland {
-  boat::boat(map::map_graph& g, map::map_node& initial_node)
+  boat::boat(map::map_graph& g, map::map_node& initial_node, kmint::pigisland::astar* pAstar)
     : play::map_bound_actor{ initial_node },
-      drawable_{ *this, graphics::image{boat_image()} }, currentstate_(new wandering_boat_state()), globalstate_(new piggybanking_state()), graph(&g) {}
+      drawable_{ *this, graphics::image{boat_image()} }, currentstate_(new wandering_boat_state()), globalstate_(new piggybanking_state()), graph(&g), astar(pAstar) {}
 
 
   void boat::act(delta_time dt) {
